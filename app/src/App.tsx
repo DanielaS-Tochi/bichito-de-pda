@@ -1,4 +1,5 @@
 import { useClient } from "@solana/react";
+import { PetPanel } from "./PetPanel";
 import {
   useConnect,
   useConnectedWallet,
@@ -130,6 +131,8 @@ function App() {
           )}
         </div>
       </section>
+
+      {connected && <PetPanel />}
 
       <footer className="footer">
         <span>Hecho para aprender, paso a paso.</span>
