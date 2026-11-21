@@ -8,4 +8,6 @@ pub enum ErrorCode {
     InvalidPetName,
     #[msg("This pet has already received all three care actions")]
     CareLimitReached,
+    #[msg("Pet can only be closed after completing all three care actions")]
+    PetNotReadyToClose,
 }

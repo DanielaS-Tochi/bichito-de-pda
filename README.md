@@ -5,9 +5,9 @@ Mascota virtual cuyo estado vive en una PDA en Solana. Pompon es el nombre de nu
 
 ## Estado
 
-El programa registra a la mascota en una PDA asociada a la wallet de su dueña. La cuenta `Pet` guarda la autoridad, el nombre, el número de cuidados y el bump de la PDA. La dueña puede registrar y cuidar a su mascota hasta completar tres cuidados; se rechazan las acciones de otra wallet y los cuidados posteriores al límite. El frontend y el cierre condicionado todavía no están implementados.
+El programa registra a la mascota en una PDA asociada a la wallet de su dueña. La cuenta `Pet` guarda la autoridad, el nombre, el número de cuidados y el bump de la PDA. La dueña puede registrar y cuidar a su mascota hasta completar tres cuidados; se rechazan las acciones de otra wallet y los cuidados posteriores al límite. La PDA solo puede cerrarse al completar los tres cuidados, y sus lamports vuelven a la dueña. El frontend todavía no está implementado.
 
-La prueba de LiteSVM verifica el registro de Pompon, rechaza un cuidado de otra wallet y confirma que un cuarto cuidado no altera el progreso completado.
+La prueba de LiteSVM verifica el registro de Pompon, los permisos, el límite de cuidados y el cierre condicionado, incluido el reembolso del saldo de la PDA.
 
 ## Requisitos (versiones con las que se probó)
 

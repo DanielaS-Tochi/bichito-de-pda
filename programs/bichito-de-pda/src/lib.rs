@@ -22,4 +22,8 @@ pub mod bichito_de_pda {
     pub fn care_for_pet(ctx: Context<CareForPet>) -> Result<()> {
         crate::instructions::care_for_pet::handle_care_for_pet(ctx)
     }
+
+    pub fn close_pet(ctx: Context<ClosePet>) -> Result<()> {
+        crate::instructions::close_pet::handle_close_pet(ctx)
+    }
 }

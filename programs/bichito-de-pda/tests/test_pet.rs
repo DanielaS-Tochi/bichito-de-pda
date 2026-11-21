@@ -38,7 +38,7 @@ fn pet_account_data(svm: &LiteSVM, pet: &Pubkey) -> bichito_de_pda::state::Pet {
 }
 
 #[test]
-fn test_pet_registration_care_permissions_and_limit() {
+fn test_pet_registration_care_permissions_limit_and_close() {
     let program_id = bichito_de_pda::id();
     let payer = Keypair::new();
     let pet = Pubkey::find_program_address(
@@ -90,6 +90,34 @@ fn test_pet_registration_care_permissions_and_limit() {
     assert!(!send_instruction(&mut svm, unauthorized_care, &unauthorized));
     assert_eq!(pet_account_data(&svm, &pet).care_count, 0);
 
+    let early_close = Instruction::new_with_bytes(
+        program_id,
+        &bichito_de_pda::instruction::ClosePet {}.data(),
+        bichito_de_pda::accounts::ClosePet {
+            pet,
+            authority: payer.pubkey(),
+        }
+        .to_account_metas(None),
+    );
+    assert!(!send_instruction(&mut svm, early_close, &payer));
+    assert_eq!(pet_account_data(&svm, &pet).care_count, 0);
+
+    let unauthorized_close = Instruction::new_with_bytes(
+        program_id,
+        &bichito_de_pda::instruction::ClosePet {}.data(),
+        bichito_de_pda::accounts::ClosePet {
+            pet,
+            authority: unauthorized.pubkey(),
+        }
+        .to_account_metas(None),
+    );
+    assert!(!send_instruction(
+        &mut svm,
+        unauthorized_close,
+        &unauthorized
+    ));
+    assert_eq!(pet_account_data(&svm, &pet).care_count, 0);
+
     for expected_count in 1..=bichito_de_pda::constants::MAX_CARE_COUNT {
         let care = Instruction::new_with_bytes(
             program_id,
@@ -118,4 +146,18 @@ fn test_pet_registration_care_permissions_and_limit() {
         pet_account_data(&svm, &pet).care_count,
         bichito_de_pda::constants::MAX_CARE_COUNT
     );
+
+    let balance_before_close = svm.get_balance(&payer.pubkey()).unwrap();
+    let close = Instruction::new_with_bytes(
+        program_id,
+        &bichito_de_pda::instruction::ClosePet {}.data(),
+        bichito_de_pda::accounts::ClosePet {
+            pet,
+            authority: payer.pubkey(),
+        }
+        .to_account_metas(None),
+    );
+    assert!(send_instruction(&mut svm, close, &payer));
+    assert!(svm.get_account(&pet).is_none());
+    assert!(svm.get_balance(&payer.pubkey()).unwrap() > balance_before_close);
 }
