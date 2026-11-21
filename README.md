@@ -1,11 +1,11 @@
 # Bichito de PDA
 
 Proyecto final de WayLearn Solana Engineering Track (Advanced).
-Mascota virtual (Nube) cuyo estado vive en una PDA en Solana. Proyecto de práctica, no un producto.
+Mascota virtual cuyo estado vive en una PDA en Solana. Pompon es el nombre de nuestra mascota de demostración; cada persona podrá elegir el suyo. Proyecto de práctica, no un producto.
 
 ## Estado
 
-Proyecto Anchor inicial (plantilla de contador) con tests en Rust funcionando. Próximo paso: reemplazar el contador por la cuenta `Pet`.
+Primer paso de implementación: el programa registra a la mascota en una PDA asociada a la wallet de su dueña. La cuenta `Pet` guarda la autoridad, el nombre, el número de cuidados y el bump de la PDA. En esta etapa están implementados el registro y una prueba de inicialización; luego agregaremos los cuidados, las reglas de autorización y el cierre condicionado. El frontend todavía no está implementado.
 
 ## Requisitos (versiones con las que se probó)
 
@@ -19,4 +19,4 @@ anchor build --arch v0
 cargo test
 ```
 
-Nota: se compila con `--arch v0` porque el build por defecto de `anchor build` generó SBPF v3 y LiteSVM 0.10.0 lo rechazó con `InvalidAccountData` en `add_program`. Con v0 el test pasa.
+Nota: `--arch v0` fue la configuración con la que funcionó la prueba inicial del contador y LiteSVM 0.10.0. Hay que volver a validar la prueba de `Pet` con esa configuración en el entorno de desarrollo.
