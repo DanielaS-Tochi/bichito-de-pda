@@ -1,0 +1,361 @@
+{
+  "additionalPrograms": [],
+  "kind": "rootNode",
+  "program": {
+    "accounts": [
+      {
+        "data": {
+          "fields": [
+            {
+              "defaultValue": {
+                "data": "b4c3b2f13d7bee20",
+                "encoding": "base16",
+                "kind": "bytesValueNode"
+              },
+              "defaultValueStrategy": "omitted",
+              "docs": [],
+              "kind": "structFieldTypeNode",
+              "name": "discriminator",
+              "type": {
+                "kind": "fixedSizeTypeNode",
+                "size": 8,
+                "type": {
+                  "kind": "bytesTypeNode"
+                }
+              }
+            },
+            {
+              "docs": [],
+              "kind": "structFieldTypeNode",
+              "name": "authority",
+              "type": {
+                "kind": "publicKeyTypeNode"
+              }
+            },
+            {
+              "docs": [],
+              "kind": "structFieldTypeNode",
+              "name": "name",
+              "type": {
+                "kind": "sizePrefixTypeNode",
+                "prefix": {
+                  "endian": "le",
+                  "format": "u32",
+                  "kind": "numberTypeNode"
+                },
+                "type": {
+                  "encoding": "utf8",
+                  "kind": "stringTypeNode"
+                }
+              }
+            },
+            {
+              "docs": [],
+              "kind": "structFieldTypeNode",
+              "name": "careCount",
+              "type": {
+                "endian": "le",
+                "format": "u8",
+                "kind": "numberTypeNode"
+              }
+            },
+            {
+              "docs": [],
+              "kind": "structFieldTypeNode",
+              "name": "bump",
+              "type": {
+                "endian": "le",
+                "format": "u8",
+                "kind": "numberTypeNode"
+              }
+            }
+          ],
+          "kind": "structTypeNode"
+        },
+        "discriminators": [
+          {
+            "kind": "fieldDiscriminatorNode",
+            "name": "discriminator",
+            "offset": 0
+          }
+        ],
+        "docs": [],
+        "kind": "accountNode",
+        "name": "pet"
+      }
+    ],
+    "definedTypes": [],
+    "docs": [],
+    "errors": [
+      {
+        "code": 6000,
+        "docs": [
+          "Unauthorized: Only the pet owner can update this pet"
+        ],
+        "kind": "errorNode",
+        "message": "Only the pet owner can update this pet",
+        "name": "unauthorized"
+      },
+      {
+        "code": 6001,
+        "docs": [
+          "InvalidPetName: Pet name must contain between 1 and 32 UTF-8 bytes"
+        ],
+        "kind": "errorNode",
+        "message": "Pet name must contain between 1 and 32 UTF-8 bytes",
+        "name": "invalidPetName"
+      },
+      {
+        "code": 6002,
+        "docs": [
+          "CareLimitReached: This pet has already received all three care actions"
+        ],
+        "kind": "errorNode",
+        "message": "This pet has already received all three care actions",
+        "name": "careLimitReached"
+      },
+      {
+        "code": 6003,
+        "docs": [
+          "PetNotReadyToClose: Pet can only be closed after completing all three care actions"
+        ],
+        "kind": "errorNode",
+        "message": "Pet can only be closed after completing all three care actions",
+        "name": "petNotReadyToClose"
+      }
+    ],
+    "events": [],
+    "instructions": [
+      {
+        "accounts": [
+          {
+            "docs": [],
+            "isOptional": false,
+            "isSigner": false,
+            "isWritable": true,
+            "kind": "instructionAccountNode",
+            "name": "pet"
+          },
+          {
+            "docs": [],
+            "isOptional": false,
+            "isSigner": true,
+            "isWritable": false,
+            "kind": "instructionAccountNode",
+            "name": "authority"
+          }
+        ],
+        "arguments": [
+          {
+            "defaultValue": {
+              "data": "e98894274579e980",
+              "encoding": "base16",
+              "kind": "bytesValueNode"
+            },
+            "defaultValueStrategy": "omitted",
+            "docs": [],
+            "kind": "instructionArgumentNode",
+            "name": "discriminator",
+            "type": {
+              "kind": "fixedSizeTypeNode",
+              "size": 8,
+              "type": {
+                "kind": "bytesTypeNode"
+              }
+            }
+          }
+        ],
+        "discriminators": [
+          {
+            "kind": "fieldDiscriminatorNode",
+            "name": "discriminator",
+            "offset": 0
+          }
+        ],
+        "docs": [],
+        "kind": "instructionNode",
+        "name": "careForPet",
+        "optionalAccountStrategy": "programId"
+      },
+      {
+        "accounts": [
+          {
+            "docs": [],
+            "isOptional": false,
+            "isSigner": false,
+            "isWritable": true,
+            "kind": "instructionAccountNode",
+            "name": "pet"
+          },
+          {
+            "docs": [],
+            "isOptional": false,
+            "isSigner": true,
+            "isWritable": true,
+            "kind": "instructionAccountNode",
+            "name": "authority"
+          }
+        ],
+        "arguments": [
+          {
+            "defaultValue": {
+              "data": "ccb8e0023e0f3aa3",
+              "encoding": "base16",
+              "kind": "bytesValueNode"
+            },
+            "defaultValueStrategy": "omitted",
+            "docs": [],
+            "kind": "instructionArgumentNode",
+            "name": "discriminator",
+            "type": {
+              "kind": "fixedSizeTypeNode",
+              "size": 8,
+              "type": {
+                "kind": "bytesTypeNode"
+              }
+            }
+          }
+        ],
+        "discriminators": [
+          {
+            "kind": "fieldDiscriminatorNode",
+            "name": "discriminator",
+            "offset": 0
+          }
+        ],
+        "docs": [],
+        "kind": "instructionNode",
+        "name": "closePet",
+        "optionalAccountStrategy": "programId"
+      },
+      {
+        "accounts": [
+          {
+            "docs": [],
+            "isOptional": false,
+            "isSigner": true,
+            "isWritable": true,
+            "kind": "instructionAccountNode",
+            "name": "authority"
+          },
+          {
+            "defaultValue": {
+              "kind": "pdaValueNode",
+              "pda": {
+                "docs": [],
+                "kind": "pdaNode",
+                "name": "pet",
+                "seeds": [
+                  {
+                    "kind": "constantPdaSeedNode",
+                    "type": {
+                      "kind": "bytesTypeNode"
+                    },
+                    "value": {
+                      "data": "ekf5",
+                      "encoding": "base58",
+                      "kind": "bytesValueNode"
+                    }
+                  },
+                  {
+                    "docs": [],
+                    "kind": "variablePdaSeedNode",
+                    "name": "authority",
+                    "type": {
+                      "kind": "publicKeyTypeNode"
+                    }
+                  }
+                ]
+              },
+              "seeds": [
+                {
+                  "kind": "pdaSeedValueNode",
+                  "name": "authority",
+                  "value": {
+                    "kind": "accountValueNode",
+                    "name": "authority"
+                  }
+                }
+              ]
+            },
+            "docs": [],
+            "isOptional": false,
+            "isSigner": false,
+            "isWritable": true,
+            "kind": "instructionAccountNode",
+            "name": "pet"
+          },
+          {
+            "defaultValue": {
+              "identifier": "systemProgram",
+              "kind": "publicKeyValueNode",
+              "publicKey": "11111111111111111111111111111111"
+            },
+            "docs": [],
+            "isOptional": false,
+            "isSigner": false,
+            "isWritable": false,
+            "kind": "instructionAccountNode",
+            "name": "systemProgram"
+          }
+        ],
+        "arguments": [
+          {
+            "defaultValue": {
+              "data": "8b44ec97cbb27d2e",
+              "encoding": "base16",
+              "kind": "bytesValueNode"
+            },
+            "defaultValueStrategy": "omitted",
+            "docs": [],
+            "kind": "instructionArgumentNode",
+            "name": "discriminator",
+            "type": {
+              "kind": "fixedSizeTypeNode",
+              "size": 8,
+              "type": {
+                "kind": "bytesTypeNode"
+              }
+            }
+          },
+          {
+            "docs": [],
+            "kind": "instructionArgumentNode",
+            "name": "name",
+            "type": {
+              "kind": "sizePrefixTypeNode",
+              "prefix": {
+                "endian": "le",
+                "format": "u32",
+                "kind": "numberTypeNode"
+              },
+              "type": {
+                "encoding": "utf8",
+                "kind": "stringTypeNode"
+              }
+            }
+          }
+        ],
+        "discriminators": [
+          {
+            "kind": "fieldDiscriminatorNode",
+            "name": "discriminator",
+            "offset": 0
+          }
+        ],
+        "docs": [],
+        "kind": "instructionNode",
+        "name": "initializePet",
+        "optionalAccountStrategy": "programId"
+      }
+    ],
+    "kind": "programNode",
+    "name": "bichitoDePda",
+    "origin": "anchor",
+    "pdas": [],
+    "publicKey": "ECoVYdegYcMrm8tC7sW1FKa8fAjY1bsQqwttj5xG6Kwr",
+    "version": "0.1.0"
+  },
+  "standard": "codama",
+  "version": "1.6.0"
+}

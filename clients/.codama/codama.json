@@ -1,0 +1,11 @@
+{
+  "idl": "/home/daniela/projects/bichito-de-pda/clients/.codama/idl.json",
+  "scripts": {
+    "js": {
+      "args": [
+        "/home/daniela/projects/bichito-de-pda/clients/js"
+      ],
+      "from": "@codama/renderers-js"
+    }
+  }
+}
