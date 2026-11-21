@@ -15,7 +15,7 @@ Proyecto Anchor inicial (plantilla de contador) con tests en Rust funcionando. P
 ## Cómo compilar y testear
 
 ```bash
-cargo build-sbf --arch v0
+anchor build --arch v0
 cargo test
 ```
 
