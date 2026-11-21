@@ -6,4 +6,6 @@ pub enum ErrorCode {
     Unauthorized,
     #[msg("Pet name must contain between 1 and 32 UTF-8 bytes")]
     InvalidPetName,
+    #[msg("This pet has already received all three care actions")]
+    CareLimitReached,
 }

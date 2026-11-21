@@ -12,8 +12,33 @@ use {
     solana_transaction::versioned::VersionedTransaction,
 };
 
+fn send_instruction(svm: &mut LiteSVM, instruction: Instruction, signer: &Keypair) -> bool {
+    svm.expire_blockhash();
+
+    let blockhash = svm.latest_blockhash();
+    let message = Message::new_with_blockhash(
+        &[instruction],
+        Some(&signer.pubkey()),
+        &blockhash,
+    );
+    let transaction = VersionedTransaction::try_new(VersionedMessage::Legacy(message), &[signer])
+        .unwrap();
+
+    let result = svm.send_transaction(transaction);
+    if let Err(error) = &result {
+        println!("LiteSVM transaction error: {error:?}");
+    }
+    result.is_ok()
+}
+
+fn pet_account_data(svm: &LiteSVM, pet: &Pubkey) -> bichito_de_pda::state::Pet {
+    let account = svm.get_account(pet).unwrap();
+    let mut data: &[u8] = &account.data;
+    bichito_de_pda::state::Pet::try_deserialize(&mut data).unwrap()
+}
+
 #[test]
-fn test_initialize_pet() {
+fn test_pet_registration_care_permissions_and_limit() {
     let program_id = bichito_de_pda::id();
     let payer = Keypair::new();
     let pet = Pubkey::find_program_address(
@@ -44,17 +69,53 @@ fn test_initialize_pet() {
         .to_account_metas(None),
     );
 
-    let blockhash = svm.latest_blockhash();
-    let msg = Message::new_with_blockhash(&[instruction], Some(&payer.pubkey()), &blockhash);
-    let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), &[&payer]).unwrap();
+    assert!(send_instruction(&mut svm, instruction, &payer));
 
-    let res = svm.send_transaction(tx);
-    assert!(res.is_ok());
-
-    let pet_account = svm.get_account(&pet).unwrap();
-    let mut data: &[u8] = &pet_account.data;
-    let pet_state = bichito_de_pda::state::Pet::try_deserialize(&mut data).unwrap();
+    let pet_state = pet_account_data(&svm, &pet);
     assert_eq!(pet_state.name, name);
     assert_eq!(pet_state.care_count, 0);
     assert_eq!(pet_state.authority, payer.pubkey());
+
+    let unauthorized = Keypair::new();
+    svm.airdrop(&unauthorized.pubkey(), 1_000_000_000).unwrap();
+    let unauthorized_care = Instruction::new_with_bytes(
+        program_id,
+        &bichito_de_pda::instruction::CareForPet {}.data(),
+        bichito_de_pda::accounts::CareForPet {
+            pet,
+            authority: unauthorized.pubkey(),
+        }
+        .to_account_metas(None),
+    );
+    assert!(!send_instruction(&mut svm, unauthorized_care, &unauthorized));
+    assert_eq!(pet_account_data(&svm, &pet).care_count, 0);
+
+    for expected_count in 1..=bichito_de_pda::constants::MAX_CARE_COUNT {
+        let care = Instruction::new_with_bytes(
+            program_id,
+            &bichito_de_pda::instruction::CareForPet {}.data(),
+            bichito_de_pda::accounts::CareForPet {
+                pet,
+                authority: payer.pubkey(),
+            }
+            .to_account_metas(None),
+        );
+        assert!(send_instruction(&mut svm, care, &payer));
+        assert_eq!(pet_account_data(&svm, &pet).care_count, expected_count);
+    }
+
+    let extra_care = Instruction::new_with_bytes(
+        program_id,
+        &bichito_de_pda::instruction::CareForPet {}.data(),
+        bichito_de_pda::accounts::CareForPet {
+            pet,
+            authority: payer.pubkey(),
+        }
+        .to_account_metas(None),
+    );
+    assert!(!send_instruction(&mut svm, extra_care, &payer));
+    assert_eq!(
+        pet_account_data(&svm, &pet).care_count,
+        bichito_de_pda::constants::MAX_CARE_COUNT
+    );
 }

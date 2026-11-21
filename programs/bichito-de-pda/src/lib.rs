@@ -18,4 +18,8 @@ pub mod bichito_de_pda {
     pub fn initialize_pet(ctx: Context<InitializePet>, name: String) -> Result<()> {
         crate::instructions::initialize_pet::handle_initialize_pet(ctx, name)
     }
+
+    pub fn care_for_pet(ctx: Context<CareForPet>) -> Result<()> {
+        crate::instructions::care_for_pet::handle_care_for_pet(ctx)
+    }
 }
