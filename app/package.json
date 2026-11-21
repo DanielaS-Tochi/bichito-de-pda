@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@bichito-de-pda/client": "file:../clients/js",
+    "@solana/kit": "^8.6.0",
+    "@solana/kit-plugin-rpc": "^0.23.0",
+    "@solana/kit-plugin-wallet": "^0.23.0",
+    "@solana/react": "^8.6.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
