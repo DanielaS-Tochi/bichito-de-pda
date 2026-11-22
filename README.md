@@ -94,3 +94,11 @@ Este repositorio es una demostración educativa para Devnet. No usar con fondos 
 ## Contribuciones
 
 Las sugerencias y mejoras son bienvenidas mediante issues o pull requests. Para cambios en el programa, incluí o actualizá pruebas y regenerá el cliente Codama si cambia el IDL.
+
+## Agradecimientos y créditos
+
+Bichito de PDA es un proyecto educativo y lúdico realizado por Daniela como proyecto final del Solana Engineering Track (Advanced) de WayLearn. Agradezco a WayLearn y a Solana Foundation por el contexto y los recursos formativos.
+
+El proyecto es una práctica independiente en Devnet; no es un producto oficial ni implica patrocinio, respaldo o revisión técnica por parte de WayLearn o Solana Foundation.
+
+ChatGPT (OpenAI) colaboró con la exploración de ideas, explicaciones técnicas, sugerencias de implementación y documentación, y con la creación inicial de la ilustración de Pompon. Las decisiones, integración y pruebas finales estuvieron a cargo de Daniela.

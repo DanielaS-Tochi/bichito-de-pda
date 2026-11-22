@@ -9,6 +9,7 @@ import {
 } from "@solana/kit-plugin-wallet/react";
 import type { AppClient } from "./client";
 import "./App.css";
+import heroImg from "./assets/pompon-garden.png";
 
 function App() {
   const client = useClient<AppClient>();
@@ -50,7 +51,11 @@ function App() {
         <div className="mascot-card" aria-label="Ilustración de una mascota">
           <div className="sparkle sparkle-one">✦</div>
           <div className="sparkle sparkle-two">✧</div>
-          <div className="mascot">🐣</div>
+          <img
+            src={heroImg}
+            className="mascot-image"
+            alt="Pompon en un jardín mágico"
+          />
           <div className="mascot-caption">
             <span className="caption-dot" />
             Tu próxima compañera te espera
