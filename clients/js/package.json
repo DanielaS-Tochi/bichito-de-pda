@@ -1,0 +1,23 @@
+{
+  "name": "@bichito-de-pda/client",
+  "version": "0.1.0",
+  "description": "Codama-generated TypeScript client for Bichito de PDA",
+  "main": "./src/index.ts",
+  "files": [
+    "./dist/src",
+    "./dist/types",
+    "./src/"
+  ],
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "peerDependencies": {
+    "@solana/kit": "^8.5.0"
+  },
+  "dependencies": {
+    "@solana/program-client-core": "^8.5.0"
+  },
+  "private": true,
+  "type": "module",
+  "types": "./src/index.ts"
+}

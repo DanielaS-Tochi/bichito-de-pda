@@ -1,0 +1,13 @@
+{
+  "name": "bichito-de-pda-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:client": "anchor codama generate --language js --path clients target/idl/bichito_de_pda.json"
+  },
+  "devDependencies": {
+    "@codama/renderers-js": "2.9.1"
+  }
+}
+

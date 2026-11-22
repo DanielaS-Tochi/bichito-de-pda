@@ -1,10 +1,8 @@
 use anchor_lang::prelude::*;
 
 #[constant]
-pub const COUNTER_SEED: &[u8] = b"counter";
+pub const PET_SEED: &[u8] = b"pet";
 
-#[constant]
-pub const HELLO_WORLD_LAMPORTS: u64 = 1;
+pub const MAX_PET_NAME_LENGTH: usize = 32;
 
-#[constant]
-pub const MAX_COUNT: u64 = 10;
+pub const MAX_CARE_COUNT: u8 = 3;

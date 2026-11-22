@@ -15,11 +15,15 @@ declare_id!("ECoVYdegYcMrm8tC7sW1FKa8fAjY1bsQqwttj5xG6Kwr");
 pub mod bichito_de_pda {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        crate::instructions::initialize::handle_initialize(ctx)
+    pub fn initialize_pet(ctx: Context<InitializePet>, name: String) -> Result<()> {
+        crate::instructions::initialize_pet::handle_initialize_pet(ctx, name)
     }
 
-    pub fn increment(ctx: Context<Increment>) -> Result<()> {
-        crate::instructions::increment::handle_increment(ctx)
+    pub fn care_for_pet(ctx: Context<CareForPet>) -> Result<()> {
+        crate::instructions::care_for_pet::handle_care_for_pet(ctx)
+    }
+
+    pub fn close_pet(ctx: Context<ClosePet>) -> Result<()> {
+        crate::instructions::close_pet::handle_close_pet(ctx)
     }
 }
