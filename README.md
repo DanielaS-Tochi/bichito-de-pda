@@ -1,24 +1,96 @@
 # Bichito de PDA
 
-Proyecto final de WayLearn Solana Engineering Track (Advanced).
-Mascota virtual cuyo estado vive en una PDA en Solana. Pompon es el nombre de nuestra mascota de demostración; cada persona podrá elegir el suyo. Proyecto de práctica, no un producto.
+**Bichito de PDA** es un proyecto educativo para practicar Solana con Anchor. Cada persona registra una mascota asociada a su wallet, consulta su estado y puede cuidarla hasta tres veces. El estado vive en una cuenta PDA en Solana.
 
-## Estado
+El nombre inicial es **Pompon** y se puede personalizar.
 
-El programa registra a la mascota en una PDA asociada a la wallet de su dueña. La cuenta `Pet` guarda la autoridad, el nombre, el número de cuidados y el bump de la PDA. La dueña puede registrar y cuidar a su mascota hasta completar tres cuidados; se rechazan las acciones de otra wallet y los cuidados posteriores al límite. La PDA solo puede cerrarse al completar los tres cuidados, y sus lamports vuelven a la dueña. El frontend todavía no está implementado.
+> Proyecto desarrollado como práctica para el Solana Engineering Track Advanced de WayLearn. No es un producto de producción.
 
-La prueba de LiteSVM verifica el registro de Pompon, los permisos, el límite de cuidados y el cierre condicionado, incluido el reembolso del saldo de la PDA.
+## Red y programa
 
-## Requisitos (versiones con las que se probó)
+- **Red:** Solana Devnet
+- **Program ID:** `ECoVYdegYcMrm8tC7sW1FKa8fAjY1bsQqwttj5xG6Kwr`
+- **Explorar el programa:** [Solana Explorer](https://explorer.solana.com/address/ECoVYdegYcMrm8tC7sW1FKa8fAjY1bsQqwttj5xG6Kwr?cluster=devnet)
+- **Evidencia de creación desde el frontend:** [Transacción confirmada en Devnet](https://explorer.solana.com/tx/5AQA3GYBtoP1DhEWCDYzz8ppMCzpCeDtURzGjHHxBKaiBMmKdk4PbXp7yLRHo2bGGJHrS1jWsdF42NSy3Bkv5VDG?cluster=devnet)
 
-- Solana CLI 3.1.10, Anchor 1.2.1, Rust 1.89 (build-sbf), Node 24
-- WSL2 (Ubuntu) en Windows 11
+## Cómo funciona
 
-## Cómo compilar y testear
+La PDA de cada mascota se deriva usando la semilla `pet` y la dirección de su dueña. Su cuenta guarda la autoridad, el nombre, el número de cuidados y el bump.
+
+El programa ofrece tres instrucciones:
+
+- `initialize_pet`: crea la mascota con un nombre de entre 1 y 32 bytes UTF-8.
+- `care_for_pet`: permite que solo la autoridad incremente sus cuidados, hasta un máximo de tres.
+- `close_pet`: permite que solo la autoridad cierre la cuenta después de completar los tres cuidados. El alquiler de la cuenta se devuelve a la autoridad.
+
+El frontend permite conectar una wallet, crear y consultar la mascota, registrar cuidados y solicitar el cierre. El programa Anchor valida las reglas y permisos en cadena; los controles de la interfaz solo ayudan a guiar el flujo.
+
+## Tecnologías
+
+- Rust y Anchor
+- Solana Devnet
+- LiteSVM para pruebas del programa
+- Codama para generar el cliente TypeScript desde el IDL
+- React, TypeScript, Vite y Solana Kit
+
+## Estructura del repositorio
+
+```text
+programs/bichito-de-pda/   Programa Anchor y pruebas LiteSVM
+clients/js/                Cliente TypeScript generado por Codama
+app/                       Frontend React
+target/idl/                IDL generado al compilar el programa
+```
+
+## Requisitos
+
+- Rust y Cargo
+- Solana CLI
+- Anchor CLI
+- Node.js y npm
+- Una wallet compatible con Solana
+
+## Preparación y ejecución
+
+Desde la raíz del repositorio:
 
 ```bash
 anchor build --arch v0
 cargo test
+npm install
+npm --prefix app install
+npm --prefix app run dev -- --host 0.0.0.0
 ```
 
-Nota: `--arch v0` fue la configuración con la que funcionó la prueba inicial del contador y LiteSVM 0.10.0. Hay que volver a validar la prueba de `Pet` con esa configuración en el entorno de desarrollo.
+Abrí la URL que muestra Vite, normalmente `http://localhost:5173`.
+
+Para usar el frontend, conectá una wallet con **Solana Devnet** seleccionado y SOL de prueba. Podés obtener Devnet SOL desde el faucet de Solana.
+
+## Cliente generado
+
+Después de compilar el programa y generar el IDL, se puede regenerar el cliente TypeScript con:
+
+```bash
+npm run generate:client
+```
+
+## Verificaciones
+
+```bash
+anchor build --arch v0
+cargo test
+npm --prefix app run lint
+npm --prefix app run build
+```
+
+Las pruebas LiteSVM cubren el registro, los permisos de autoridad, el límite de cuidados y las condiciones de cierre.
+
+## Seguridad y alcance
+
+La wallet firma las transacciones; la aplicación no almacena claves privadas. Las reglas importantes se aplican en el programa Anchor y no dependen únicamente de la interfaz.
+
+Este repositorio es una demostración educativa para Devnet. No usar con fondos reales.
+
+## Contribuciones
+
+Las sugerencias y mejoras son bienvenidas mediante issues o pull requests. Para cambios en el programa, incluí o actualizá pruebas y regenerá el cliente Codama si cambia el IDL.

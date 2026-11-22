@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useClient } from "@solana/react";
 import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
 import {
+  getCareForPetInstruction,
+  getClosePetInstruction,
   getInitializePetInstructionAsync,
   type Pet,
 } from "@bichito-de-pda/client";
@@ -21,6 +23,12 @@ export function PetPanel() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
+
+  async function refreshPet(currentAuthority: string) {
+    const result = await readPetForAuthority(currentAuthority);
+    setPetAddress(result.petAddress);
+    setPet(result.pet);
+  }
 
   useEffect(() => {
     let active = true;
@@ -83,10 +91,69 @@ export function PetPanel() {
 
       const result = await client.sendTransaction([instruction]);
       setSignature(result.context.signature);
+      await refreshPet(authority);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      setSending(false);
+    }
+  }
 
-      const updated = await readPetForAuthority(authority);
-      setPetAddress(updated.petAddress);
-      setPet(updated.pet);
+  async function careForPet() {
+    const signer = connected?.signer;
+
+    if (!signer || !authority || !petAddress) {
+      setError("Conectá una wallet para cuidar a tu mascota.");
+      return;
+    }
+
+    setSending(true);
+    setError(null);
+    setSignature(null);
+
+    try {
+      const instruction = getCareForPetInstruction({
+        pet: petAddress,
+        authority: signer,
+      });
+
+      const result = await client.sendTransaction([instruction]);
+      setSignature(result.context.signature);
+      await refreshPet(authority);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function closePet() {
+    const signer = connected?.signer;
+
+    if (!signer || !authority || !petAddress) {
+      setError("Conectá una wallet para cerrar la cuenta.");
+      return;
+    }
+
+    if (!window.confirm(
+      "¿Cerrar la cuenta de tu mascota? Solo puede hacerse después de completar los tres cuidados.",
+    )) {
+      return;
+    }
+
+    setSending(true);
+    setError(null);
+    setSignature(null);
+
+    try {
+      const instruction = getClosePetInstruction({
+        pet: petAddress,
+        authority: signer,
+      });
+
+      const result = await client.sendTransaction([instruction]);
+      setSignature(result.context.signature);
+      await refreshPet(authority);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
     } finally {
@@ -106,9 +173,46 @@ export function PetPanel() {
         <>
           <h2 id="pet-panel-title">¡Hola, {pet.name}!</h2>
           <p className="pet-message">
-            Encontramos su cuenta en Devnet. Cuidados registrados:{" "}
-            <strong>{pet.careCount} de 3</strong>.
+            Cuidados registrados: <strong>{pet.careCount} de 3</strong>.
           </p>
+
+          <div
+            className="pet-progress"
+            role="progressbar"
+            aria-label="Cuidados completados"
+            aria-valuenow={pet.careCount}
+            aria-valuemin={0}
+            aria-valuemax={3}
+          >
+            <span style={{ width: `${(pet.careCount / 3) * 100}%` }} />
+          </div>
+
+          <div className="pet-actions">
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={() => void careForPet()}
+              disabled={sending || pet.careCount >= 3 || !connected?.signer}
+            >
+              {sending ? "Procesando…" : "Cuidar a mi bichito"}
+            </button>
+
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={() => void closePet()}
+              disabled={sending || pet.careCount < 3 || !connected?.signer}
+            >
+              Cerrar cuenta
+            </button>
+          </div>
+
+          <p className="pet-message">
+            {pet.careCount < 3
+              ? "Cada cuidado actualiza la cuenta PDA en Solana."
+              : "¡Completó los tres cuidados! Ya podés cerrar su cuenta y recuperar el alquiler."}
+          </p>
+
           {petAddress && (
             <p className="pet-address">
               PDA: {petAddress.slice(0, 8)}…{petAddress.slice(-6)}
