@@ -10,6 +10,20 @@ import {
 import type { Address } from "@solana/kit";
 import type { AppClient } from "./client";
 import { readPetForAuthority } from "./petService";
+import pomponImage from "./assets/Bichito-mascot.png";
+
+function careStageName(count: number) {
+  switch (count) {
+    case 0:
+      return "Curiosa";
+    case 1:
+      return "Con energía";
+    case 2:
+      return "Contenta";
+    default:
+      return "Radiante";
+  }
+}
 
 export function PetPanel() {
   const client = useClient<AppClient>();
@@ -171,6 +185,15 @@ export function PetPanel() {
         </p>
       ) : pet ? (
         <>
+          <div className={`pet-visual pet-visual--${pet.careCount}`}>
+            <img
+              src={pomponImage}
+              alt={`${pet.name}, etapa ${pet.careCount} de cuidados`}
+            />
+            <span className="pet-stage-badge">
+              {careStageName(pet.careCount)} · {pet.careCount}/3
+            </span>
+          </div>
           <h2 id="pet-panel-title">¡Hola, {pet.name}!</h2>
           <p className="pet-message">
             Cuidados registrados: <strong>{pet.careCount} de 3</strong>.
