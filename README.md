@@ -4,6 +4,8 @@
 
 El nombre inicial es **Pompon** y se puede personalizar.
 
+**Demo en vivo:** [Abrir Bichito de PDA en GitHub Pages](https://danielas-tochi.github.io/bichito-de-pda/)
+
 > Proyecto desarrollado como práctica para el Solana Engineering Track Advanced de WayLearn. No es un producto de producción.
 
 ## Red y programa
